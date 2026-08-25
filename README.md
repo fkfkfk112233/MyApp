@@ -1,4 +1,4 @@
-# My Project
+# My App
 
 React + Spring Boot 的天氣預報練習專案。
 
