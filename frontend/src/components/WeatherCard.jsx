@@ -13,6 +13,13 @@ function WeatherCard({ weather }) {
           <strong>{weather.city}</strong>
         </div>
 
+        <div className="weather-period">
+          <span>預報時段</span>
+          <strong>
+            {weather.startTime} ～ {weather.endTime}
+          </strong>
+        </div>
+
         <div className="weather-icon-box">
           <img
             src={weatherIconUrl}
