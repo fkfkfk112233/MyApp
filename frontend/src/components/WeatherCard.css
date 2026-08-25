@@ -1,0 +1,118 @@
+/* 天氣卡片 */
+.weather-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 30px auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片標題 */
+.weather-card-title {
+  margin: 0;
+  padding: 18px 20px;
+  background-color: #1e2a38;
+  color: #ffffff;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+/* 卡片內容 */
+.weather-card-body {
+  padding: 25px 20px;
+  text-align: center;
+}
+
+/* 地點 */
+.weather-location {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.weather-location span {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+.weather-location strong {
+  color: #1e2a38;
+  font-size: 1.3rem;
+}
+
+/* 天氣圖示 */
+.weather-icon-box {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.weather-icon {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+/* 天氣狀況 */
+.weather-status h3 {
+  margin: 10px 0 20px;
+  color: #1e2a38;
+  font-size: 1.5rem;
+}
+
+/* 溫度 */
+.temperature {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 15px;
+
+  color: #1e2a38;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* 降雨機率 */
+.rain-probability {
+  color: #555555;
+  font-size: 1rem;
+}
+
+/* 手機版 */
+@media (max-width: 768px) {
+  .weather-card {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .weather-card-body {
+    padding: 20px 15px;
+  }
+
+  .weather-icon-box {
+    width: 120px;
+    height: 120px;
+  }
+
+  .weather-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .weather-status h3 {
+    font-size: 1.3rem;
+  }
+
+  .temperature {
+    font-size: 1.2rem;
+  }
+}
