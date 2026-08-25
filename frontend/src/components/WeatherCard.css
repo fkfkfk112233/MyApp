@@ -116,3 +116,22 @@
     font-size: 1.2rem;
   }
 }
+
+/* 預報時段 */
+.weather-period {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  margin-bottom: 20px;
+}
+
+.weather-period span {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+.weather-period strong {
+  color: #1e2a38;
+  font-size: 0.95rem;
+}
