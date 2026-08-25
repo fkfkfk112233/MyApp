@@ -1,5 +1,9 @@
 package backend.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import backend.client.WeatherApiClient;
@@ -10,6 +14,9 @@ import backend.dto.cwa.CwaWeatherResponse;
 public class WeatherService {
 
     private final WeatherApiClient weatherApiClient;
+
+    private final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public WeatherService(WeatherApiClient weatherApiClient) {
         this.weatherApiClient = weatherApiClient;
@@ -25,30 +32,61 @@ public class WeatherService {
                         .getLocation()
                         .get(0);
 
-        String weather = getParameter(
-                location,
-                "Wx"
-        ).getParameterName();
+        LocalDateTime now = LocalDateTime.now();
 
-        String weatherCode = getParameter(
-                location,
-                "Wx"
-        ).getParameterValue();
+        CwaWeatherResponse.Time weatherTime =
+                findCurrentTime(
+                        location,
+                        "Wx",
+                        now
+                );
 
-        int minTemperature = Integer.parseInt(
-                getParameter(location, "MinT")
-                        .getParameterName()
-        );
+        CwaWeatherResponse.Time popTime =
+                findCurrentTime(
+                        location,
+                        "PoP",
+                        now
+                );
 
-        int maxTemperature = Integer.parseInt(
-                getParameter(location, "MaxT")
-                        .getParameterName()
-        );
+        CwaWeatherResponse.Time minTTime =
+                findCurrentTime(
+                        location,
+                        "MinT",
+                        now
+                );
 
-        int rainProbability = Integer.parseInt(
-                getParameter(location, "PoP")
-                        .getParameterName()
-        );
+        CwaWeatherResponse.Time maxTTime =
+                findCurrentTime(
+                        location,
+                        "MaxT",
+                        now
+                );
+
+        String weather =
+                weatherTime.getParameter()
+                        .getParameterName();
+
+        String weatherCode =
+                weatherTime.getParameter()
+                        .getParameterValue();
+
+        int rainProbability =
+                Integer.parseInt(
+                        popTime.getParameter()
+                                .getParameterName()
+                );
+
+        int minTemperature =
+                Integer.parseInt(
+                        minTTime.getParameter()
+                                .getParameterName()
+                );
+
+        int maxTemperature =
+                Integer.parseInt(
+                        maxTTime.getParameter()
+                                .getParameterName()
+                );
 
         return new WeatherResponse(
                 location.getLocationName(),
@@ -56,26 +94,56 @@ public class WeatherService {
                 weatherCode,
                 minTemperature,
                 maxTemperature,
-                rainProbability
+                rainProbability,
+                weatherTime.getStartTime(),
+                weatherTime.getEndTime()
         );
     }
 
-    private CwaWeatherResponse.Parameter getParameter(
+    private CwaWeatherResponse.Time findCurrentTime(
             CwaWeatherResponse.Location location,
-            String elementName) {
+            String elementName,
+            LocalDateTime now) {
 
-        return location.getWeatherElement()
-                .stream()
-                .filter(element ->
-                        element.getElementName()
-                                .equals(elementName))
+        CwaWeatherResponse.WeatherElement element =
+                location.getWeatherElement()
+                        .stream()
+                        .filter(weatherElement ->
+                                weatherElement
+                                        .getElementName()
+                                        .equals(elementName))
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new IllegalStateException(
+                                        "找不到天氣資料: "
+                                                + elementName
+                                ));
+
+        List<CwaWeatherResponse.Time> times =
+                element.getTime();
+
+        return times.stream()
+                .filter(time -> {
+
+                    LocalDateTime start =
+                            LocalDateTime.parse(
+                                    time.getStartTime(),
+                                    formatter
+                            );
+
+                    LocalDateTime end =
+                            LocalDateTime.parse(
+                                    time.getEndTime(),
+                                    formatter
+                            );
+
+                    return !now.isBefore(start)
+                            && now.isBefore(end);
+                })
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "找不到天氣資料: " + elementName
-                        ))
-                .getTime()
-                .get(0)
-                .getParameter();
+                                "找不到目前時間對應的預報時段"
+                        ));
     }
 }
