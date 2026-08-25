@@ -8,6 +8,8 @@ public class WeatherResponse {
     private int minTemperature;
     private int maxTemperature;
     private int rainProbability;
+    private String startTime;
+    private String endTime;
 
     public WeatherResponse() {
     }
@@ -18,7 +20,9 @@ public class WeatherResponse {
             String weatherCode,
             int minTemperature,
             int maxTemperature,
-            int rainProbability) {
+            int rainProbability,
+            String startTime,
+            String endTime) {
 
         this.city = city;
         this.weather = weather;
@@ -26,6 +30,8 @@ public class WeatherResponse {
         this.minTemperature = minTemperature;
         this.maxTemperature = maxTemperature;
         this.rainProbability = rainProbability;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public String getCity() {
@@ -74,5 +80,21 @@ public class WeatherResponse {
 
     public void setRainProbability(int rainProbability) {
         this.rainProbability = rainProbability;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }
