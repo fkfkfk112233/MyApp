@@ -64,6 +64,12 @@ public class WeatherService {
 
 		List<CwaWeatherResponse.Time> times = element.getTime();
 
+		System.out.println("預報時段:");
+
+		for (CwaWeatherResponse.Time time : times) {
+			System.out.println(time.getStartTime() + " ~ " + time.getEndTime());
+		}
+
 		return times.stream().filter(time -> {
 
 			LocalDateTime start = LocalDateTime.parse(time.getStartTime(), formatter);
@@ -71,7 +77,11 @@ public class WeatherService {
 			LocalDateTime end = LocalDateTime.parse(time.getEndTime(), formatter);
 
 			return !now.isBefore(start) && now.isBefore(end);
-		}).findFirst().orElseThrow(() -> new IllegalStateException("找不到目前時間對應的預報時段"));
+		}).findFirst().orElseGet(() -> times.stream().filter(time -> {
+			LocalDateTime start = LocalDateTime.parse(time.getStartTime(), formatter);
+
+			return start.isAfter(now);
+		}).findFirst().orElseThrow(() -> new IllegalStateException("找不到目前或下一個預報時段")));
 	}
 
 	public WeatherResponse getWeather(Double latitude, Double longitude) {
@@ -82,6 +92,6 @@ public class WeatherService {
 
 		System.out.println("GPS 對應城市: " + city);
 
-		throw new UnsupportedOperationException("GPS weather 尚未實作");
+		return getWeather(city);
 	}
 }
