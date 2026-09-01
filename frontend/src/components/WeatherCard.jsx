@@ -122,7 +122,7 @@ function WeatherCard({ weather, loading, error }) {
         <span>預報時段：</span>
 
         <strong>
-          {weather.startTime} ～ {weather.endTime}
+          {weather.startTime} <br/> ～{weather.endTime}
         </strong>
       </div>
     </section>
