@@ -6,6 +6,14 @@ import "./App.css";
 
 function App() {
   const [selectedCity, setSelectedCity] = useState("臺北市");
+
+  const [location, setLocation] = useState({
+    type: "city",
+    city: "臺北市",
+    latitude: null,
+    longitude: null,
+  });
+
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +45,8 @@ function App() {
       <LocationSelector
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
+        location={location}
+        setLocation={setLocation}
       />
 
       {loading && <p>載入中...</p>}
