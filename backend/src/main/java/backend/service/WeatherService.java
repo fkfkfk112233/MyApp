@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import backend.client.GeocodeApiClient;
 import backend.client.WeatherApiClient;
+import backend.dto.GeocodeResponse;
 import backend.dto.WeatherResponse;
 import backend.dto.cwa.CwaWeatherResponse;
 
@@ -19,9 +20,7 @@ public class WeatherService {
 
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-	public WeatherService(
-			WeatherApiClient weatherApiClient,
-			GeocodeApiClient geocodeApiClient) {
+	public WeatherService(WeatherApiClient weatherApiClient, GeocodeApiClient geocodeApiClient) {
 		this.weatherApiClient = weatherApiClient;
 		this.geocodeApiClient = geocodeApiClient;
 	}
@@ -77,9 +76,11 @@ public class WeatherService {
 
 	public WeatherResponse getWeather(Double latitude, Double longitude) {
 
-		// 暫時測試 GPS 是否成功傳到 Service
-		System.out.println("GPS latitude: " + latitude);
-		System.out.println("GPS longitude: " + longitude);
+		GeocodeResponse response = geocodeApiClient.reverseGeocode(latitude, longitude);
+
+		String city = response.getAddress().getCity();
+
+		System.out.println("GPS 對應城市: " + city);
 
 		throw new UnsupportedOperationException("GPS weather 尚未實作");
 	}
