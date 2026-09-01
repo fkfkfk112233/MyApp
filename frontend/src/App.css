@@ -783,6 +783,13 @@ button {
   font-size: 38px;
 }
 
+.forecast-weather-icon {
+  width: 48px;
+  height: 48px;
+
+  object-fit: contain;
+}
+
 .forecast-detail {
   min-width: 0;
 }
