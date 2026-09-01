@@ -5,6 +5,7 @@ function LocationSelector({
   setSelectedCity,
   location,
   setLocation,
+  weather,
 }) {
   function handleChange(event) {
     const city = event.target.value;
@@ -63,11 +64,14 @@ function LocationSelector({
 
           {location.type === "city" && <p>城市：{location.city}</p>}
 
-          {location.type === "gps" && (
-            <>
-              <p>Latitude: {location.latitude}</p>
-              <p>Longitude: {location.longitude}</p>
-            </>
+          {location.type === "gps" && weather && (
+            // <>
+            //   <p>Latitude: {location.latitude}</p>
+            //   <p>Longitude: {location.longitude}</p>
+            // </>
+            <div>
+              <p>📍 目前位置：{weather.city}</p>
+            </div>
           )}
         </div>
       </div>
