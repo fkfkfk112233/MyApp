@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import backend.dto.WeatherResponse;
+import backend.dto.WeatherForecastResponse;
 import backend.service.WeatherService;
 
 @RestController
@@ -14,22 +14,24 @@ import backend.service.WeatherService;
 @CrossOrigin(origins = "http://localhost:5173")
 public class WeatherController {
 
-    private final WeatherService weatherService;
+	private final WeatherService weatherService;
 
-    public WeatherController(WeatherService weatherService) {
-        this.weatherService = weatherService;
-    }
+	public WeatherController(WeatherService weatherService) {
+		this.weatherService = weatherService;
+	}
 
-    @GetMapping
-    public WeatherResponse getWeather(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) Double latitude,
-            @RequestParam(required = false) Double longitude) {
+	@GetMapping
+	public WeatherForecastResponse getWeather(@RequestParam(required = false) String city,
+			@RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude) {
 
-        if (latitude != null && longitude != null) {
-            return weatherService.getWeather(latitude, longitude);
-        }
+		if (city != null) {
+			return weatherService.getWeatherForecast(city);
+		}
 
-        return weatherService.getWeather(city);
-    }
+		if (latitude != null && longitude != null) {
+			return weatherService.getWeatherForecast(latitude, longitude);
+		}
+
+		throw new IllegalArgumentException("必須提供 city 或 latitude / longitude");
+	}
 }
