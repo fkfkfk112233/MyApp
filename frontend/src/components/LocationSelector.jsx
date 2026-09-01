@@ -7,6 +7,8 @@ function LocationSelector({
   setLocation,
   weather,
 }) {
+  const [locating, setLocating] = useState(false);
+
   function handleChange(event) {
     const city = event.target.value;
 
@@ -26,6 +28,8 @@ function LocationSelector({
       return;
     }
 
+    setLocating(true);
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const latitude = position.coords.latitude;
@@ -37,9 +41,12 @@ function LocationSelector({
           latitude,
           longitude,
         });
+
+        setLocating(false);
       },
       (error) => {
         console.error("取得 GPS 失敗:", error);
+        setLocating(false);
       },
     );
   };
@@ -57,7 +64,9 @@ function LocationSelector({
       </select>
 
       <div>
-        <button onClick={getCurrentLocation}>使用目前位置</button>
+        <button onClick={getCurrentLocation} disabled={locating}>
+          {locating ? "定位中..." : "使用目前位置"}
+        </button>
 
         <div>
           <p>地點來源：{location.type}</p>
