@@ -1,73 +1,436 @@
-# My App
+# Weather App
 
-React + Spring Boot 的天氣預報練習專案。
+一個使用 **React + Spring Boot** 開發的天氣預報網站。
 
-目前已完成 React 前端、Spring Boot 後端，以及中央氣象署（CWA）API 串接。
+目前以台灣地區天氣為主要目標，使用中央氣象署（CWA）提供的天氣預報資料，並支援手動選擇城市與瀏覽器 GPS 定位。
 
-## 技術
+## Features
 
-- Frontend：React、Vite
-- Backend：Spring Boot、RestClient
-- API：中央氣象署 CWA
-- API Key：Windows Environment Variable
+* 手動選擇台灣城市
 
-## 目前功能
+  * 臺北市
+  * 新北市
+  * 桃園市
+  * 臺中市
+  * 高雄市
+* 使用 Browser Geolocation API 取得目前位置
+* GPS latitude / longitude 傳送至後端
+* GPS 座標 Reverse Geocoding
+* GPS 座標對應台灣城市
+* 使用中央氣象署 CWA 取得天氣預報
+* 顯示目前預報時段
+* 顯示未來預報時段
+* 顯示天氣圖示
+* 顯示最高 / 最低溫度
+* 顯示降雨機率
+* Loading 狀態
+* Error handling
+* React ESLint
+* 前後端分離架構
+* API Key 使用環境變數管理
 
-- 選擇縣市取得天氣資料
-- 顯示天氣狀況
-- 顯示天氣圖示
-- 顯示最高 / 最低溫
-- 顯示降雨機率
-- 顯示目前對應的預報時段
-- Loading / Error handling
-- React → Spring Boot → CWA API 完整串接
+## Tech Stack
 
-## 專案架構
+### Frontend
+
+* React
+* Vite
+* JavaScript
+* Browser Geolocation API
+* Fetch API
+* CSS
+
+### Backend
+
+* Java 21
+* Spring Boot 4.1.1
+* Spring Web MVC
+* RestClient
+* Maven
+
+### External APIs
+
+* Central Weather Administration (CWA)
+* Geocoding API
+
+## System Architecture
+
+```text
+┌──────────────────────┐
+│      React           │
+│                      │
+│ LocationSelector     │
+│ WeatherCard          │
+│ ForecastCard         │
+└──────────┬───────────┘
+           │
+           │ Fetch API
+           ▼
+┌──────────────────────┐
+│ WeatherController    │
+└──────────┬───────────┘
+           ▼
+┌──────────────────────┐
+│ WeatherService       │
+└───────┬────────┬─────┘
+        │        │
+        │        │ GPS
+        │        ▼
+        │   ┌────────────────┐
+        │   │ GeocodeApiClient│
+        │   └───────┬────────┘
+        │           │
+        │           ▼
+        │      Geocoding API
+        │           │
+        │           ▼
+        │          City
+        │
+        ▼
+┌──────────────────────┐
+│ WeatherApiClient     │
+└──────────┬───────────┘
+           │
+           ▼
+     CWA Weather API
+           │
+           ▼
+┌──────────────────────┐
+│ WeatherForecastResponse│
+│                      │
+│ current              │
+│ forecasts            │
+└──────────┬───────────┘
+           │
+           ▼
+        React UI
+```
+
+## Request Flow
+
+### 手動選擇城市
+
+```text
+User
+ ↓
+LocationSelector
+ ↓
+location.type = "city"
+ ↓
+weatherService.js
+ ↓
+GET /api/weather?city=臺北市
+ ↓
+WeatherController
+ ↓
+WeatherService
+ ↓
+WeatherApiClient
+ ↓
+CWA
+ ↓
+WeatherForecastResponse
+ ↓
+WeatherCard / ForecastCard
+```
+
+### GPS 定位
+
+```text
+User
+ ↓
+Browser Geolocation API
+ ↓
+latitude / longitude
+ ↓
+React location state
+ ↓
+weatherService.js
+ ↓
+GET /api/weather?latitude=25.x&longitude=121.x
+ ↓
+WeatherController
+ ↓
+WeatherService
+ ↓
+GeocodeApiClient
+ ↓
+Reverse Geocoding
+ ↓
+臺北市
+ ↓
+WeatherApiClient
+ ↓
+CWA
+ ↓
+WeatherForecastResponse
+ ↓
+WeatherCard / ForecastCard
+```
+
+## API Response
+
+目前後端回傳：
+
+```json
+{
+  "current": {
+    "city": "臺北市",
+    "weather": "陰短暫陣雨或雷雨",
+    "weatherCode": "18",
+    "minTemperature": 28,
+    "maxTemperature": 31,
+    "rainProbability": 70,
+    "startTime": "2026-09-01 12:00:00",
+    "endTime": "2026-09-01 18:00:00"
+  },
+  "forecasts": [
+    {
+      "weather": "陰短暫陣雨或雷雨",
+      "weatherCode": "18",
+      "minTemperature": 28,
+      "maxTemperature": 31,
+      "rainProbability": 70,
+      "startTime": "2026-09-01 12:00:00",
+      "endTime": "2026-09-01 18:00:00"
+    }
+  ]
+}
+```
+
+`current` 用於目前天氣卡片。
+
+`forecasts` 用於未來預報卡片。
+
+## UI Layout
+
+目前使用三欄式 Dashboard：
+
+```text
+┌────────────────┬──────────────────┬──────────────────┐
+│                │                  │                  │
+│  Location      │  Current Weather │  Forecast        │
+│                │                  │                  │
+│  選擇地點       │  目前天氣         │  未來預報         │
+│                │                  │                  │
+│  GPS           │  Weather Icon     │  Forecast 1      │
+│  Latitude      │  Temperature      │  Forecast 2      │
+│  Longitude     │  Rain Probability │                  │
+│                │                  │                  │
+└────────────────┴──────────────────┴──────────────────┘
+```
+
+### 左側
+
+* 城市選擇
+* GPS 定位
+* GPS 座標
+* 目前位置來源
+
+### 中間
+
+* 目前城市
+* 目前預報時段
+* 天氣圖示
+* 天氣狀況
+* 最高 / 最低溫
+* 降雨機率
+
+### 右側
+
+* 未來預報
+* 下一個預報時段
+* 再下一個預報時段
+* 天氣圖示
+* 溫度
+* 降雨機率
+
+## Project Structure
 
 ```text
 MyApp/
-├─ frontend/
-│  └─ React
 │
-└─ backend/
-   └─ Spring Boot
-      ├─ controller/
-      ├─ service/
-      ├─ client/
-      ├─ config/
-      └─ dto/
+├── README.md
+│
+├── frontend/
+│   ├── README.md
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── App.jsx
+│       ├── App.css
+│       ├── index.css
+│       ├── main.jsx
+│       │
+│       ├── components/
+│       │   ├── LocationSelector.jsx
+│       │   ├── WeatherCard.jsx
+│       │   ├── WeatherCard.css
+│       │   └── ForecastCard.jsx
+│       │
+│       └── services/
+│           └── weatherService.js
+│
+└── backend/
+    ├── README.md
+    ├── pom.xml
+    └── src/
+        └── main/
+            ├── java/backend/
+            │   ├── BackendApplication.java
+            │   ├── controller/
+            │   ├── service/
+            │   ├── client/
+            │   ├── config/
+            │   └── dto/
+            │
+            └── resources/
+                └── application.properties
 ```
 
-## API 流程
+## Environment Variables
+
+API Key 不放在 React 前端。
+
+Backend 使用環境變數：
 
 ```text
-React
-  ↓
-Spring Boot Controller
-  ↓
-WeatherService
-  ↓
-WeatherApiClient
-  ↓
-CWA API
-  ↓
-WeatherResponse
-  ↓
-React WeatherCard
+CWA_API_KEY
+GEOCODE_API_KEY
 ```
 
-## 目前進度
+Spring Boot：
 
-- [x] React 天氣元件
-- [x] Spring Boot API
-- [x] CWA API 串接
-- [x] DTO / Data Mapping
-- [x] API Key 環境變數
-- [x] 天氣圖示
-- [x] 預報時段判斷
-- [ ] GPS 定位
-- [ ] 其他功能與 UI 優化
+```properties
+weather.api.key=${CWA_API_KEY}
+geocode.api.key=${GEOCODE_API_KEY}
+```
 
-## 備註
+請勿將實際 API Key 寫入 Git。
 
-目前先以開發練習為主，README 後續會隨專案完成度再補充完整。
+## Run the Project
+
+### 1. 啟動 Backend
+
+```bash
+cd backend
+```
+
+Windows：
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Backend 預設：
+
+```text
+http://localhost:8080
+```
+
+### 2. 啟動 Frontend
+
+開啟另一個終端機：
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend 預設：
+
+```text
+http://localhost:5173
+```
+
+## API Endpoint
+
+### City
+
+```http
+GET /api/weather?city=臺北市
+```
+
+### GPS
+
+```http
+GET /api/weather?latitude=25.044686&longitude=121.516743
+```
+
+## Current Status
+
+### Completed
+
+* [x] React Weather App
+* [x] Vite
+* [x] WeatherCard
+* [x] ForecastCard
+* [x] LocationSelector
+* [x] Loading / Error handling
+* [x] Fetch API
+* [x] Spring Boot Controller
+* [x] Spring Boot Service
+* [x] WeatherApiClient
+* [x] GeocodeApiClient
+* [x] RestClient
+* [x] CWA API
+* [x] Reverse Geocoding
+* [x] GPS Geolocation
+* [x] GPS → City mapping
+* [x] CWA JSON → DTO mapping
+* [x] Current forecast period detection
+* [x] Current weather display
+* [x] Future forecast display
+* [x] Weather icons
+* [x] Environment variable API Keys
+* [x] Three-column Dashboard UI
+* [x] React ESLint
+
+### Planned
+
+* [ ] WeatherService 重構
+* [ ] 更完整的錯誤處理
+* [ ] Forecast 時段判斷最佳化
+* [ ] Frontend / Backend testing
+* [ ] Responsive UI further improvements
+* [ ] 全球天氣支援
+* [ ] 多 Weather Provider 架構
+
+## Future Global Weather Support
+
+目前專案以台灣為主要目標。
+
+GPS 本身可以取得全球座標，但目前的天氣資料來源是 CWA，因此流程目前為：
+
+```text
+GPS
+ ↓
+Reverse Geocoding
+ ↓
+Taiwan City
+ ↓
+CWA
+```
+
+未來若要支援全球，可以擴充為：
+
+```text
+GPS
+ ↓
+Reverse Geocoding
+ ↓
+Country
+ ↓
+Weather Provider
+ ├── Taiwan → CWA
+ └── Other Countries → Global Weather API
+```
+
+目前暫不實作，以避免過早增加系統複雜度。
+
+## Disclaimer
+
+天氣資訊僅供參考，實際天氣狀況可能與預報有所差異。
+
+本專案主要作為 React、Spring Boot、REST API、GPS 與前後端整合練習使用。
