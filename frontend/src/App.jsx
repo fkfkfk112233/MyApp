@@ -24,7 +24,7 @@ function App() {
         setLoading(true);
         setError("");
 
-        const data = await getWeather(selectedCity);
+        const data = await getWeather(location);
 
         setWeather(data);
       } catch (error) {
@@ -36,7 +36,7 @@ function App() {
     }
 
     loadWeather();
-  }, [selectedCity]);
+  }, [location]);
 
   return (
     <div className="app">
