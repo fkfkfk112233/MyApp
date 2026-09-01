@@ -1,5 +1,6 @@
 package backend.client;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -13,7 +14,7 @@ public class WeatherApiClient {
     private final String apiKey;
 
     public WeatherApiClient(
-            RestClient restClient,
+    		@Qualifier("cwaRestClient") RestClient restClient,
             @Value("${weather.api.key}") String apiKey) {
 
         this.restClient = restClient;
