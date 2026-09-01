@@ -22,7 +22,13 @@ public class WeatherController {
 
     @GetMapping
     public WeatherResponse getWeather(
-            @RequestParam String city) {
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude) {
+
+        if (latitude != null && longitude != null) {
+            return weatherService.getWeather(latitude, longitude);
+        }
 
         return weatherService.getWeather(city);
     }
