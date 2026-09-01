@@ -37,7 +37,9 @@ function WeatherCard({ weather, loading, error }) {
     );
   }
 
-  const weatherIconUrl = `https://www.cwa.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/day/${weather.weatherCode}.svg`;
+  const current = weather.current;
+
+  const weatherIconUrl = `https://www.cwa.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/day/${current.weatherCode}.svg`;
 
   return (
     <section className="current-weather-card">
@@ -47,7 +49,7 @@ function WeatherCard({ weather, loading, error }) {
 
           <div>
             <h2>目前天氣</h2>
-            <p>{weather.city}</p>
+            <p>{current.city}</p>
           </div>
         </div>
 
@@ -55,9 +57,9 @@ function WeatherCard({ weather, loading, error }) {
           <span>◷</span>
 
           <span>
-            {weather.startTime.slice(11, 16)}
+            {current.startTime.slice(11, 16)}
             {" ~ "}
-            {weather.endTime.slice(11, 16)}
+            {current.endTime.slice(11, 16)}
           </span>
         </div>
       </div>
@@ -66,21 +68,21 @@ function WeatherCard({ weather, loading, error }) {
         <div className="weather-icon-box">
           <img
             src={weatherIconUrl}
-            alt={weather.weather}
+            alt={current.weather}
             className="weather-icon"
           />
         </div>
 
-        <h3>{weather.weather}</h3>
+        <h3>{current.weather}</h3>
 
-        <div className="main-temperature">{weather.maxTemperature}°C</div>
+        <div className="main-temperature">{current.maxTemperature}°C</div>
 
         <div className="temperature-range">
-          <span>最低 {weather.minTemperature}°C</span>
+          <span>最低 {current.minTemperature}°C</span>
 
           <span className="temperature-separator">•</span>
 
-          <span>最高 {weather.maxTemperature}°C</span>
+          <span>最高 {current.maxTemperature}°C</span>
         </div>
       </div>
 
@@ -91,7 +93,7 @@ function WeatherCard({ weather, loading, error }) {
           <div>
             <span>降雨機率</span>
 
-            <strong>{weather.rainProbability}%</strong>
+            <strong>{current.rainProbability}%</strong>
           </div>
         </div>
 
@@ -101,7 +103,7 @@ function WeatherCard({ weather, loading, error }) {
           <div>
             <span>最高溫度</span>
 
-            <strong>{weather.maxTemperature}°C</strong>
+            <strong>{current.maxTemperature}°C</strong>
           </div>
         </div>
 
@@ -111,7 +113,7 @@ function WeatherCard({ weather, loading, error }) {
           <div>
             <span>最低溫度</span>
 
-            <strong>{weather.minTemperature}°C</strong>
+            <strong>{current.minTemperature}°C</strong>
           </div>
         </div>
       </div>
@@ -122,7 +124,8 @@ function WeatherCard({ weather, loading, error }) {
         <span>預報時段：</span>
 
         <strong>
-          {weather.startTime} <br/> ～{weather.endTime}
+          {current.startTime}
+          <br />～ {current.endTime}
         </strong>
       </div>
     </section>
