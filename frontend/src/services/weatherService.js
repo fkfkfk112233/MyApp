@@ -7,6 +7,10 @@ export async function getWeather(location) {
     )}`;
   }
 
+  if (location.type === "gps") {
+    url = `http://localhost:8080/api/weather?latitude=${location.latitude}&longitude=${location.longitude}`;
+  }
+
   const response = await fetch(url);
 
   if (!response.ok) {
