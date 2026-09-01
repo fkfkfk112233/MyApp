@@ -8,9 +8,16 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfig {
 
     @Bean
-    public RestClient restClient() {
+    public RestClient cwaRestClient() {
         return RestClient.builder()
                 .baseUrl("https://opendata.cwa.gov.tw")
+                .build();
+    }
+    
+    @Bean
+    public RestClient geocodeRestClient() {
+        return RestClient.builder()
+                .baseUrl("https://geocode.maps.co")
                 .build();
     }
 }
