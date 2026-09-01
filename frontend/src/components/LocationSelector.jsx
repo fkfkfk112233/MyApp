@@ -139,10 +139,12 @@ function LocationSelector({
 
             <div>
               <strong>
-                {isGps ? weather?.city || "取得位置中..." : selectedCity}
+                {isGps
+                  ? weather?.current?.city || "取得位置中..."
+                  : selectedCity}
               </strong>
 
-              <span>{isGps ? "GPS 定位" : "手動選擇"}</span>
+              {/* <span>{isGps ? "GPS 定位" : "手動選擇"}</span> */}
             </div>
           </div>
 
