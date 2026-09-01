@@ -67,12 +67,6 @@ public class WeatherService {
 
 		List<CwaWeatherResponse.Time> times = element.getTime();
 
-		System.out.println("預報時段:");
-
-		for (CwaWeatherResponse.Time time : times) {
-			System.out.println(time.getStartTime() + " ~ " + time.getEndTime());
-		}
-
 		return times.stream().filter(time -> {
 
 			LocalDateTime start = LocalDateTime.parse(time.getStartTime(), formatter);
