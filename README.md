@@ -358,45 +358,6 @@ GET /api/weather?city=臺北市
 GET /api/weather?latitude=25.044686&longitude=121.516743
 ```
 
-## Current Status
-
-### Completed
-
-* [x] React Weather App
-* [x] Vite
-* [x] WeatherCard
-* [x] ForecastCard
-* [x] LocationSelector
-* [x] Loading / Error handling
-* [x] Fetch API
-* [x] Spring Boot Controller
-* [x] Spring Boot Service
-* [x] WeatherApiClient
-* [x] GeocodeApiClient
-* [x] RestClient
-* [x] CWA API
-* [x] Reverse Geocoding
-* [x] GPS Geolocation
-* [x] GPS → City mapping
-* [x] CWA JSON → DTO mapping
-* [x] Current forecast period detection
-* [x] Current weather display
-* [x] Future forecast display
-* [x] Weather icons
-* [x] Environment variable API Keys
-* [x] Three-column Dashboard UI
-* [x] React ESLint
-
-### Planned
-
-* [ ] WeatherService 重構
-* [ ] 更完整的錯誤處理
-* [ ] Forecast 時段判斷最佳化
-* [ ] Frontend / Backend testing
-* [ ] Responsive UI further improvements
-* [ ] 全球天氣支援
-* [ ] 多 Weather Provider 架構
-
 ## Future Global Weather Support
 
 目前專案以台灣為主要目標。
