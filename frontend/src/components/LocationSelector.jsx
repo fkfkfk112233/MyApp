@@ -1,13 +1,38 @@
 function LocationSelector({ selectedCity, setSelectedCity }) {
+
   function handleChange(event) {
     setSelectedCity(event.target.value);
   }
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      console.log("瀏覽器不支援 Geolocation API");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        console.log("latitude:", latitude);
+        console.log("longitude:", longitude);
+      },
+      (error) => {
+        console.error("取得 GPS 失敗:", error);
+      }
+    );
+  };
 
   return (
     <div>
       <label htmlFor="city-select">選擇地點：</label>
 
-      <select id="city-select" value={selectedCity} onChange={handleChange}>
+      <select
+        id="city-select"
+        value={selectedCity}
+        onChange={handleChange}
+      >
         <option value="臺北市">臺北市</option>
         <option value="新北市">新北市</option>
         <option value="桃園市">桃園市</option>
@@ -15,7 +40,9 @@ function LocationSelector({ selectedCity, setSelectedCity }) {
         <option value="高雄市">高雄市</option>
       </select>
 
-      {/* <button>使用目前位置</button> */}
+      <button onClick={getCurrentLocation}>
+        使用目前位置
+      </button>
     </div>
   );
 }
