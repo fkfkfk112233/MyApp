@@ -11,6 +11,10 @@ export async function getWeather(location) {
     url = `http://localhost:8080/api/weather?latitude=${location.latitude}&longitude=${location.longitude}`;
   }
 
+  if (!url) {
+    throw new Error("Invalid location type");
+  }
+
   const response = await fetch(url);
 
   if (!response.ok) {
