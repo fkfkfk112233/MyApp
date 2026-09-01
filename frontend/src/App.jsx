@@ -47,6 +47,7 @@ function App() {
         setSelectedCity={setSelectedCity}
         location={location}
         setLocation={setLocation}
+        weather={weather}
       />
 
       {loading && <p>載入中...</p>}
