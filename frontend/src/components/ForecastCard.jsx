@@ -59,12 +59,18 @@ function ForecastCard({ weather, loading, error }) {
     );
   }
 
+  const forecasts = (weather.forecasts || []).slice(1);
+
   const formatTime = (dateTime) => {
     if (!dateTime) {
       return "--:--";
     }
 
     return dateTime.slice(11, 16);
+  };
+
+  const getWeatherIconUrl = (weatherCode) => {
+    return `https://www.cwa.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/day/${weatherCode}.svg`;
   };
 
   return (
@@ -74,68 +80,55 @@ function ForecastCard({ weather, loading, error }) {
 
         <div>
           <h2>未來預報</h2>
-          <p>{weather.city} 36 小時預報</p>
+          <p>{weather.current.city} 36 小時預報</p>
         </div>
       </div>
 
       <div className="forecast-list">
-        <div className="forecast-item forecast-item-active">
-          <div className="forecast-item-header">
-            <span className="forecast-time">
-              {formatTime(weather.startTime)}
-              {" ~ "}
-              {formatTime(weather.endTime)}
-            </span>
+        {forecasts.map((forecast, index) => (
+          <div
+            className={`forecast-item ${
+              index === 0 ? "forecast-item-active" : ""
+            }`}
+            key={`${forecast.startTime}-${forecast.endTime}`}
+          >
+            <div className="forecast-item-header">
+              <span className="forecast-time">
+                {formatTime(forecast.startTime)}
+                {" ~ "}
+                {formatTime(forecast.endTime)}
+              </span>
 
-            <span className="forecast-next">接下來</span>
-          </div>
+              {index === 0 && <span className="forecast-next">接下來</span>}
+            </div>
 
-          <div className="forecast-item-content">
-            <div className="forecast-placeholder-icon">☀️</div>
-
-            <div className="forecast-detail">
-              <strong>{weather.weather}</strong>
-
-              <div className="forecast-temperature">
-                <span>{weather.minTemperature}°C</span>
-                <span>~</span>
-                <span>{weather.maxTemperature}°C</span>
+            <div className="forecast-item-content">
+              <div className="forecast-placeholder-icon">
+                <img
+                  src={getWeatherIconUrl(forecast.weatherCode)}
+                  alt={forecast.weather}
+                  className="forecast-weather-icon"
+                />
               </div>
 
-              <span className="forecast-rain">
-                💧 降雨機率 {weather.rainProbability}%
-              </span>
+              <div className="forecast-detail">
+                <strong>{forecast.weather}</strong>
+
+                <div className="forecast-temperature">
+                  <span>{forecast.minTemperature}°C</span>
+
+                  <span>~</span>
+
+                  <span>{forecast.maxTemperature}°C</span>
+                </div>
+
+                <span className="forecast-rain">
+                  💧 降雨機率 {forecast.rainProbability}%
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="forecast-item forecast-item-placeholder">
-          <div className="forecast-item-header">
-            <span className="forecast-time">下一時段</span>
-          </div>
-
-          <div className="forecast-placeholder-content">
-            <span>🌙</span>
-            <div>
-              <strong>下一個預報時段</strong>
-              <p>即將接上 CWA 36 小時資料</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="forecast-item forecast-item-placeholder">
-          <div className="forecast-item-header">
-            <span className="forecast-time">後續時段</span>
-          </div>
-
-          <div className="forecast-placeholder-content">
-            <span>☁️</span>
-            <div>
-              <strong>後續預報</strong>
-              <p>即將接上 CWA 36 小時資料</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       <div className="forecast-footer">
